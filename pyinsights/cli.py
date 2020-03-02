@@ -69,3 +69,6 @@ def run(cli_options: CliOptions) -> bool:
 def main() -> bool:
     args = parse_args()
     sys.exit(run(args))
+
+if __name__ == '__main__':
+    main()

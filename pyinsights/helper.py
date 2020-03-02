@@ -129,5 +129,5 @@ def processing(msg: str, end: str = '') -> None:
     """
 
     processing_msg = f'{Accessory.Accent}{color()}{msg}{Accessory.End}{end}'
-    sys.stdout.write(processing_msg)
-    sys.stdout.flush()
+    sys.stderr.write(processing_msg)
+    sys.stderr.flush()
