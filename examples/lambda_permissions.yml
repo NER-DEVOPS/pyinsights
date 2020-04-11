@@ -1,0 +1,6 @@
+version: '1.0'
+log_group_name:
+  - 'CloudTrail/DefaultLogGroup'
+query_string: |
+  filter userIdentity.arn = 'arn:aws:sts::106715121600:assumed-role/iam_role_security_dev_creating_a_policy_for_user_in_dev/security_dev_creating_a_policy_for_user_in_dev'
+duration: '1d'

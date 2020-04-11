@@ -4,7 +4,7 @@ from functools import cached_property
 from pathlib import Path
 from typing import Any, Dict, List, NamedTuple, Union
 
-from jsonschema import Draft7Validator
+#from jsonschema import Draft7Validator
 from jsonschema.exceptions import ValidationError
 from yaml import safe_load
 
@@ -138,7 +138,7 @@ def validate(config: ConfigType, version: str) -> bool:
 
     try:
         schema = load_schema(version)
-        Draft7Validator(schema).validate(config)
+#        Draft7Validator(schema).validate(config)
     except ValidationError as err:
         raise ConfigInvalidSyntaxError(err)
     except Exception as err:
