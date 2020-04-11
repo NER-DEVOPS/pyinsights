@@ -1,0 +1,6 @@
+version: '1.0'
+log_group_name:
+  - 'CloudTrail/DefaultLogGroup'
+query_string: |
+  filter errorCode = 'AccessDenied'
+duration: '1d'
