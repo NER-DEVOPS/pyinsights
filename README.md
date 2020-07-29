@@ -1,5 +1,17 @@
 # fork of pyinsights
-Purpose 
+to build the docker image 
+`docker build . -t pyinsights`
+
+to run it in wsl 
+
+```
+docker  run \
+	--mount type=bind,source="c:/Users/$USER/.aws/",target=/root/.aws \
+	--mount type=bind,source="c:/Users/$USER/Documents/GitHub/pyinsights/queries/",target=/opt/pyinsights/queries/ \
+	-it "pyinsights" pyinsights -c /opt/pyinsights/queries/codebuild.yml --profile default -r us-east-1 > codebuild_data.json
+```
+
+
 # PyInsights
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyinsights)
