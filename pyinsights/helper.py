@@ -128,6 +128,7 @@ def processing(msg: str, end: str = '') -> None:
         end {str} - - (default: {''})
     """
 
-    processing_msg = f'{Accessory.Accent}{color()}{msg}{Accessory.End}{end}'
-    sys.stderr.write(processing_msg)
-    sys.stderr.flush()
+    #processing_msg = f'{Accessory.Accent}{color()}{msg}{Accessory.End}{end}'
+    #sys.stderr.write(processing_msg)
+    #sys.stderr.flush()
+    pass

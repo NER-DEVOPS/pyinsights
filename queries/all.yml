@@ -1,7 +1,9 @@
 version: '1.0'
 log_group_name:
   - 'CloudTrail/DefaultLogGroup'
-query_string: |
-  stats count(*) by eventSource, eventName, awsRegion, resources.0.ARN, userIdentity.arn,  errorCode
+query_string: |  
+  stats count(*) by eventSource, eventName, awsRegion, resources.0.ARN , resources.1.ARN, userIdentity.arn,  errorCode
    
-duration: '7d'
+duration:
+  start_time: '{start_date} 00:00:00'
+  end_time: '{end_date} 23:59:59'
