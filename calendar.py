@@ -6,11 +6,11 @@ with open("queries/all.yml") as r:
     q = r.read()
 print(q)
 
-delta = timedelta(days=-7)
+delta = timedelta(days=-1)
 
 now = datetime.now()
 
-for x in range(1,10):
+for x in range(1,60):
     end_date = now.date()
     now = now + delta
     start_date = now.date()
