@@ -1,0 +1,6 @@
+version: '1.0'
+log_group_name:
+  - 'CloudTrail/DefaultLogGroup'
+query_string: |
+  filter userIdentity.arn like /codebuild-role-mynrgapp-qa-deploy_role2/
+duration: '24h'

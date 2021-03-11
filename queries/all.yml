@@ -10,7 +10,3 @@ query_string: |
   and userIdentity.arn != "arn:aws:sts::877023909339:assumed-role/CloudHealth/AssumeRoleSession"
   and userIdentity.arn != "arn:aws:sts::877023909339:assumed-role/AWSServiceRoleForConfig/AWSConfig-Describe"
   | stats count(*) by eventSource, eventName, awsRegion, resources.0.ARN as res0, resources.1.ARN as res1, userIdentity.arn as user,  errorCode
-   
-duration:
-  start_time: '{start_date} 00:00:00'
-  end_time: '{end_date} 23:59:59'

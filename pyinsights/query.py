@@ -22,34 +22,51 @@ from pyinsights.helper import (
 )
 
 
+QueryResultResponse = Type[Dict[str, Any]]
+
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION')
-
-
-QueryResultResponse = Type[Dict[str, Any]]
-
 
 class InsightsClient:
     def __init__(
         self,
         region: Optional[str] = None,
         profile: Optional[str] = None,
+        role: Optional[str] = None,
     ) -> None:
         """
         Keyword Arguments:
             region {Optional[str]}
             profile {Optional[str]}
+            role {Optional[str]}
         """
 
         region_name = region or AWS_DEFAULT_REGION
 
-        session = boto3.Session(
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-            region_name=region_name,
-            profile_name=profile,
-        )
+        session = None
+        
+        if not role:
+            #print("no role")
+            session = boto3.Session(
+                aws_access_key_id=AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+                region_name=region_name,
+                profile_name=profile)
+        else:
+            sts_client = boto3.client('sts')
+            assumed_role_object=sts_client.assume_role(
+                RoleArn=role,
+                RoleSessionName="pyinsights"
+            )        
+            credentials=assumed_role_object['Credentials']
+            session = boto3.Session(
+                aws_access_key_id=credentials['AccessKeyId'],
+                aws_secret_access_key=credentials['SecretAccessKey'],
+                aws_session_token=credentials['SessionToken'],
+                region_name=region_name
+            )
+            #print("assumed role", credentials)
 
         self.__client = session.client('logs')
         self.__query_id = None
@@ -77,7 +94,8 @@ class InsightsClient:
         Returns:
             bool
         """
-
+        #print(query_string)
+            
         response = self.__client.start_query(
             logGroupNames=log_group_name,
             startTime=start_time,
@@ -155,15 +173,19 @@ class InsightsClient:
 
 
 def query(
+        dates,
     region: str,
     profile: str,
-    query_params: ConfigType
+        role: str,
+        #query_params: ConfigType
+        config,
 ) -> QueryResultResponse:
     """Run thread
 
     Arguments:
         region {str}
         profile {str}
+        role {str}
         query_params {ConfigType}
 
     Returns:
@@ -173,7 +195,9 @@ def query(
     results = {}
     processing('Waiting', end=' ')
 
-    client = InsightsClient(region, profile)
+    client = InsightsClient(region, profile, role)
+
+    query_params = config.get_query_params(dates)
     client.start_query(**query_params)
 
     try:
