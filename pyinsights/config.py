@@ -54,8 +54,18 @@ class ConfigFile(NamedTuple):
         }
         return duration_epoch
 
-    def get_query_params(self, dates) -> ConfigType:
+    def get_query_params(self, dates, some_data) -> ConfigType:
 
+        query =  self.content['query_string']
+        
+        if some_data:
+            for k in some_data:
+                astr = "{{" +k + "}}"
+                value = some_data[k]
+                if astr in query:
+                    query = query.replace(astr, value)
+            #print (query)
+            
         if dates[0]:
             self.content['duration'] = {
                 'start_time': str(dates[0]) + " 00:00:00",
@@ -64,6 +74,7 @@ class ConfigFile(NamedTuple):
         params = self.content.copy()
 
         del params['version']
+        params['query_string'] = query
         
         new_duration = self.convert_duration()
         del params['duration']

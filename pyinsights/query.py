@@ -173,6 +173,7 @@ class InsightsClient:
 
 
 def query(
+        some_data,
         dates,
     region: str,
     profile: str,
@@ -197,7 +198,7 @@ def query(
 
     client = InsightsClient(region, profile, role)
 
-    query_params = config.get_query_params(dates)
+    query_params = config.get_query_params(dates, some_data)
     client.start_query(**query_params)
 
     try:

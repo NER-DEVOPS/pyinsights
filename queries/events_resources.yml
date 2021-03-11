@@ -1,0 +1,14 @@
+version: '1.0'
+log_group_name:
+  - 'CloudTrail/DefaultLogGroup'
+query_string: |
+  filter  userIdentity.arn != "arn:aws:sts::106715121600:assumed-role/AWSServiceRoleForAmazonMacie/AmazonMacieSession"
+  and userIdentity.arn != "arn:aws:sts::106715121600:assumed-role/PrismaCloudReadOnlyRole/redlock"
+  and userIdentity.arn != "arn:aws:sts::106715121600:assumed-role/CloudHealth/AssumeRoleSession"
+  and userIdentity.arn != "arn:aws:sts::106715121600:assumed-role/AWSServiceRoleForConfig/AWSConfig-Describe"
+  and userIdentity.arn != "arn:aws:sts::877023909339:assumed-role/PrismaCloudReadOnlyRole/redlock"
+  and userIdentity.arn != "arn:aws:sts::877023909339:assumed-role/CloudHealth/AssumeRoleSession"
+  and userIdentity.arn != "arn:aws:sts::877023909339:assumed-role/AWSServiceRoleForConfig/AWSConfig-Describe"
+  and eventSource = "{{eventSource}}"
+  and eventName = "{{eventName}}"
+  | stats count(*) by resources.0.ARN

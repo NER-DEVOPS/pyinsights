@@ -1,3 +1,9 @@
+# example of running in cloud shell
+
+
+    bash -x ./run_cloudshell.sh  ./queries/events_resources.yml --data-from data/dev_events_new.json
+
+
 # fork of pyinsights
 to build the docker image 
 `docker build . -t pyinsights`

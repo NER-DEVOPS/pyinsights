@@ -2,6 +2,7 @@ import argparse
 from typing import Any, Dict, Type
 import sys
 from datetime import datetime, timedelta
+import json
 
 from pyinsights.__version__ import __version__
 from pyinsights.config import load_config
@@ -30,6 +31,11 @@ def parse_args() -> Dict[str, Any]:
         required=True,
         default='pyinsights.yml',
         help='PyInsights config file path',
+    )
+
+    parser.add_argument(
+        '--data-from',
+        help='read data from and run query for each item',
     )
     
     parser.add_argument(
@@ -100,32 +106,51 @@ def process_dates(cli_options: CliOptions):
         #with open("queries/all_{end_date}.yml".format(end_date=end_date),"w") as w:
         #w.write(q.format(start_date=start_date, end_date=end_date))
 
-
+def process_data(cli_options):
+    if 'data_from' in cli_options:
+        with open(cli_options['data_from']) as fi:
+            return json.load(fi)
+        
 def run(cli_options: CliOptions) -> bool:
     config = load_config(cli_options['config'])
     count = 0
 
     #print('start')
     for dates in process_dates(cli_options):
+
         #print(dates)
         assume_role = None
 
         if 'assume_role' in cli_options:
             assume_role = cli_options['assume_role']
         #print("role", assume_role)
-        
-        tmp_result = query(
-            dates,
-            cli_options['region'],
-            cli_options['profile'],
-            assume_role,
-            config
-        )
 
-        if isinstance(tmp_result, dict) and (results := tmp_result.get('results')):
-            formatted_result = format_result(cli_options['format'], results)
-            sys.stdout.write(formatted_result)
-            count = count + 1
+        for some_data in process_data(cli_options):
+            #print(some_data)
+            
+            tmp_result = query(
+                some_data,
+                dates,
+                cli_options['region'],
+                cli_options['profile'],
+                assume_role,
+                config
+            )
+
+            if isinstance(tmp_result, dict) and (results := tmp_result.get('results')):
+
+                results2 = []
+                
+                for y in results:    
+                    for x in some_data:                                                                                                
+                        y.append( { 'field': "other_" + x, 'value': some_data[x] })
+                    y.append({'field' : 'from_dates', 'value' : str(dates[0]) })
+                    y.append({'field' : 'to_dates', 'value' : str(dates[1]) })
+                    results2.append(y)
+                        
+                formatted_result = format_result(cli_options['format'], results2)
+                sys.stdout.write(formatted_result)
+                count = count + 1
 
     return count > 0
 
