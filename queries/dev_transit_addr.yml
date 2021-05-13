@@ -1,0 +1,8 @@
+version: '1.0'
+log_group_name:
+  - 'mdupont'
+query_string: |
+  stats
+      count(*) as count,
+      sum(packets) as pkts,
+      sum(bytes) as bytes by srcAddr, dstAddr, interfaceId, action

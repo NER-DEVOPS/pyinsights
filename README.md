@@ -1,3 +1,30 @@
+# running 
+
+`poetry run pyinsights`
+
+`poetry run pyinsights -c ./queries/dev_source_addr.yml `
+
+poetry run pyinsights -c ./queries/dev_source_addr.yml  > source_addr.json
+poetry run pyinsights -c ./queries/dev_dest_addr.yml > dest_addr.json
+
+poetry run pyinsights --profile prod --region us-east-1 -c ./queries/prod_source_addr.yml  > prod_source_addr.json
+poetry run pyinsights --profile prod --region us-east-1 -c ./queries/prod_dest_addr.yml  > prod_dest_addr.json
+
+# transit between source and dest
+poetry run pyinsights  --region us-east-1 -c ./queries/dev_transit_addr.yml > dev_transit.json 
+poetry run pyinsights --profile prod --region us-east-1 -c ./queries/prod_transit_addr.yml > prod_transit.json 
+
+## merge multiple items together 
+jq -s [.[]]  ~/GitHub/devops/pyinsights/prod_transit.json > data/prod_transit.json
+
+poetry run pyinsights --profile prod --region us-east-1 -c ./queries/cloudwatch_details.yml > cloudwatch_details_prod.json
+poetry run pyinsights  -c ./queries/cloudwatch_details.yml > cloudwatch_details_dev.json
+
+poetry  run pyinsights  --region us-east-1 --profile prod -c ./queries/cloudwatch_details.yml
+
+jq -r '.[]|.srcAddr' source_addr.json  | sort -u | grep -v null > source_addr.txt
+jq -r '.[]|.dstAddr' dest_addr.json  | sort -u | grep -v null  > dest_addr.txt
+
 # example of running in cloud shell
 
 

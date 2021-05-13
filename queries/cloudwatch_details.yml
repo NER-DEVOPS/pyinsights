@@ -1,0 +1,26 @@
+version: '1.0'
+log_group_name:
+  - 'CloudTrail/DefaultLogGroup'
+query_string: |
+  filter userIdentity.arn not in [   
+  "arn:aws:sts::106715121600:assumed-role/AWSServiceRoleForAmazonMacie/AmazonMacieSession",
+  "arn:aws:sts::106715121600:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+  "arn:aws:sts::106715121600:assumed-role/AWSServiceRoleForElasticBeanstalk/elasticbeanstalk",
+  "arn:aws:sts::106715121600:assumed-role/ApiGatewayCloudWatch/BackplaneAssumeRoleSession",
+  "arn:aws:sts::106715121600:assumed-role/CloudHealth/AssumeRoleSession",
+  "arn:aws:sts::106715121600:assumed-role/FirehoseWAFLogsDeliveryStreamRole/AWSFirehoseToS3",
+  "arn:aws:sts::106715121600:assumed-role/PrismaCloudReadOnlyRole/redlock",
+  
+  "arn:aws:sts::877023909339:assumed-role/AWSServiceRoleForAmazonMacie/AmazonMacieSession",
+  "arn:aws:sts::877023909339:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+  "arn:aws:sts::877023909339:assumed-role/AWSServiceRoleForElasticBeanstalk/elasticbeanstalk",
+  "arn:aws:sts::877023909339:assumed-role/ApiGatewayCloudWatch/BackplaneAssumeRoleSession",
+  "arn:aws:sts::877023909339:assumed-role/CloudHealth/AssumeRoleSession",
+  "arn:aws:sts::877023909339:assumed-role/FirehoseWAFLogsDeliveryStreamRole/AWSFirehoseToS3",
+  "arn:aws:sts::877023909339:assumed-role/PrismaCloudReadOnlyRole/redlock"
+
+  ] 
+  and sourceIPAddress != "ssm.amazonaws.com"
+  | stats count(*) by eventName, eventSource, awsRegion, sourceIPAddress, userIdentity.arn, resources.0.arn,
+  resources.1.arn,  errorCode, errorMessage
+  

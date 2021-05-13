@@ -1,0 +1,6 @@
+version: '1.0'
+log_group_name:
+  - 'CloudTrail/DefaultLogGroup'
+query_string: |
+  stats sum(packets) as pkts, sum(bytes) as bytes by dstAddr
+

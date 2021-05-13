@@ -7,7 +7,7 @@ import json
 from pyinsights.__version__ import __version__
 from pyinsights.config import load_config
 from pyinsights.query import query
-from formatter import format_result
+from pyinsights.dataformatter import format_result
 
 
 CliOptions = Type[Dict[str, Any]]
@@ -108,8 +108,11 @@ def process_dates(cli_options: CliOptions):
 
 def process_data(cli_options):
     if 'data_from' in cli_options:
-        with open(cli_options['data_from']) as fi:
-            return json.load(fi)
+        if cli_options['data_from'] is not None:
+            with open(cli_options['data_from']) as fi:
+                return json.load(fi)
+
+    return [ { 'params' : 'none'}, ]
         
 def run(cli_options: CliOptions) -> bool:
     config = load_config(cli_options['config'])
@@ -118,7 +121,7 @@ def run(cli_options: CliOptions) -> bool:
     #print('start')
     for dates in process_dates(cli_options):
 
-        #print(dates)
+        #print("DATES",dates)
         assume_role = None
 
         if 'assume_role' in cli_options:
@@ -126,8 +129,8 @@ def run(cli_options: CliOptions) -> bool:
         #print("role", assume_role)
 
         for some_data in process_data(cli_options):
-            #print(some_data)
-            
+            #print(some_data, dates, config, assume_role)
+
             tmp_result = query(
                 some_data,
                 dates,

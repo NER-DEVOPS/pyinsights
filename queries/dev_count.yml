@@ -1,0 +1,10 @@
+version: '1.0'
+log_group_name:
+  - 'mdupont'
+query_string: |
+  stats
+      min(@timestamp) as stime,
+      max(@timestamp) as etime,
+      count(*) as count
+duration: '1d'
+
